@@ -88,7 +88,6 @@ if (isset($_POST['upload'])) {
     $name = $_FILES['file']['name'];
     $size = $_FILES['file']['size'];
     $email = $_SESSION['email'];
-    $download = $_FILES['file']['download'];
     $destination = './uploads/' . $name;
 
     $extension = pathinfo($name, PATHINFO_EXTENSION);
@@ -124,18 +123,15 @@ if (isset($_GET['file_id'])) {
     $filepath = "uploads/" . $file['name'];
 
     if (file_exists($filepath)) {
-        header('Content-Type: application/octet-stream');
         header('Content-Description: File Transfer');
-        header('Content-Disposition: attachment; filename=' . basename($filepath));
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename($filepath) . '"');
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
-        header('Content-Length: ' . filesize('uploads/' . $file['name']));
-        readfile('uploads/' . $file['name']);
-
-        $newCount = $file['download'] + 1;
-        $updateQuery = "UPDATE upload SET download=$newCount WHERE id =$id";
-        mysqli_query($conn, $updateQuery);
+        header('Content-Length: ' . filesize($filepath));
+        flush();
+        readfile($filepath);
         exit;
     }
 }

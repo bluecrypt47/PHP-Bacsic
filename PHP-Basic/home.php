@@ -20,7 +20,18 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <style>
-        
+        table {
+            width: 60%;
+            border-collapse: collapse;
+            margin: 100px auto;
+        }
+
+        th,
+        td {
+            height: 50px;
+            vertical-align: center;
+            border: 1px solid black;
+        }
     </style>
 
 </head>
@@ -56,13 +67,12 @@
     </div>
 
 
-    <table align="center">
+    <table>
         <thead>
             <th>No.</th>
             <th>Filename</th>
             <th>Size(MB)</th>
             <th>Author</th>
-            <th>Download</th>
             <th>Action</th>
         </thead>
         <tbody>
@@ -73,8 +83,7 @@
                     <td><?php echo $file['name']; ?></td>
                     <td><?php echo $file['size'] / 1000 . "KB"; ?></td>
                     <td><?php echo $file['email']; ?></td>
-                    <td><?php echo $file['download']; ?></td>
-                    <td><a class="btn" href="home.php?file_id=<?php echo $file['id'] ?>">Download</a></td>
+                    <td><a class="btn btn-primary" href="home.php?file_id=<?php echo $file['id'] ?>">Download</a></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
