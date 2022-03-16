@@ -86,22 +86,56 @@ if (isset($_POST['upload'])) {
 
     // lay thong tin file upload
     $name = $_FILES['file']['name'];
+    $size = $_FILES['file']['size'];
     $email = $_SESSION['email'];
+    $download = $_FILES['file']['download'];
+    $destination = './uploads/' . $name;
 
-    if (empty($name) && empty($size) && empty($type)) {
-        array_push($errors, "File not found!");
-    }
+    $extension = pathinfo($name, PATHINFO_EXTENSION);
 
-    if (isset($name) && !empty($name)) {
-        $sql = "INSERT INTO upload (name, email) VALUES ('$name', '$email')";
-        $result = mysqli_query($conn, $sql);
-        if (mysqli_num_rows($result) > 0) {
-            echo '<script language="javascript">alert("File has existed!"); window.location="upload.php";</script>';
-        } else {
-            echo '<script language="javascript">alert("Upload file Successfully!"); window.location="home.php";</script>';
-            die();
-        }
+    $file = $_FILES['file']['tmp_name'];
+    $size = $_FILES['file']['size'];
+
+    if (!in_array($extension, ['zip', 'pdf', 'png', 'jpg', 'jpeg', 'docx', 'gif'])) {
+        echo "File tail must be zip, pdf, png, jpg, jpeg, docx or gif";
     } else {
-        echo '<script language="javascript">alert("Chose file upload!"); window.location="upload.php";</script>';
+        if (move_uploaded_file($file, $destination)) {
+            $sql = "INSERT INTO upload (name, size, email) VALUES ('$name',  $size, '$email')";
+
+            if (mysqli_query($conn, $sql)) {
+                echo '<script language="javascript">alert("Upload file Successfully!"); window.location="home.php";</script>';
+            } else {
+                echo '<script language="javascript">alert("Upload file Fail!"); window.location="upload.php";</script>';
+                die();
+            }
+        }
+    }
+}
+
+// Download
+if (isset($_GET['file_id'])) {
+    $id = $_GET['file_id'];
+
+    // fetch file to download from database
+    $sql = "SELECT * FROM upload WHERE id=$id";
+    $result = mysqli_query($conn, $sql);
+
+    $file = mysqli_fetch_assoc($result);
+    $filepath = "uploads/" . $file['name'];
+
+    if (file_exists($filepath)) {
+        header('Content-Type: application/octet-stream');
+        header('Content-Description: File Transfer');
+        header('Content-Disposition: attachment; filename=' . basename($filepath));
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize('uploads/' . $file['name']));
+        readfile('uploads/' . $file['name']);
+
+        $newCount = $file['download'] + 1;
+        $updateQuery = "UPDATE upload SET download=$newCount WHERE id =$id";
+        mysqli_query($conn, $updateQuery);
+        exit;
     }
 }

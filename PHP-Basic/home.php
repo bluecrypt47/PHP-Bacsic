@@ -19,6 +19,10 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+    <style>
+        
+    </style>
+
 </head>
 
 <body>
@@ -56,7 +60,9 @@
         <thead>
             <th>No.</th>
             <th>Filename</th>
+            <th>Size(MB)</th>
             <th>Author</th>
+            <th>Download</th>
             <th>Action</th>
         </thead>
         <tbody>
@@ -65,8 +71,10 @@
                 <tr>
                     <td><?php echo $i++; ?></td>
                     <td><?php echo $file['name']; ?></td>
+                    <td><?php echo $file['size'] / 1000 . "KB"; ?></td>
                     <td><?php echo $file['email']; ?></td>
-                    <td><a href="download.php?file_id=<?php echo $file['id'] ?>" class="btn">Download</a></td>
+                    <td><?php echo $file['download']; ?></td>
+                    <td><a class="btn" href="home.php?file_id=<?php echo $file['id'] ?>">Download</a></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

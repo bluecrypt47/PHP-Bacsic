@@ -54,7 +54,7 @@ File `upload.php`, trong trang này, user cần chọn file mà mình muốn `Up
 
         </div>
         <input class="btn btn-lg btn-primary btn-block" type="submit" name="upload" value="Upload" />
-        <?php require 'handle.php'; ?>
+        <?php require 'handle.php'; ?>s
     </form>
 ```
 ## Search file
