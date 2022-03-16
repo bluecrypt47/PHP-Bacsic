@@ -83,9 +83,31 @@
                     <td><?php echo $file['name']; ?></td>
                     <td><?php echo $file['size'] / 1000 . "KB"; ?></td>
                     <td><?php echo $file['email']; ?></td>
-                    <td><a class="btn btn-primary" href="home.php?file_id=<?php echo $file['id'] ?>">Download</a></td>
+                    <td><a class="btn btn-primary" href="home.php?file=<?php echo $file['name'] ?>">Download</a></td>
+
                 </tr>
             <?php endforeach; ?>
+            <?php
+            if (!empty($_GET['file'])) {
+                $filename = basename($_GET['file']);
+                $filepath = 'uploads/' . $filename;
+                if (!empty($filename) && file_exists($filepath)) {
+                    header('Content-Description: File Transfer');
+                    header('Content-Type: application/octet-stream');
+                    header('Content-Disposition: attachment; filename="' . basename($filepath) . '"');
+                    header('Expires: 0');
+                    header('Cache-Control: must-revalidate');
+                    header('Pragma: public');
+                    header('Content-Length: ' . filesize($filepath));
+                    flush();
+                    readfile($filepath);
+                    exit;
+                } else {
+                    echo "This File Does not exist.";
+                }
+            }
+
+            ?>
         </tbody>
     </table>
 
