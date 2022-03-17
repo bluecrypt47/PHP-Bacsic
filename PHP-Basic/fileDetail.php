@@ -111,9 +111,9 @@ session_start();
         <tbody>
             <?php foreach ($comments as $comment) : ?>
                 <tr>
-                    <td><?php echo $file['email']; ?></td>
-                    <td><?php echo $file['content']; ?></td>
-                    <td><?php echo $file['createDate']; ?></td>
+                    <td><?php echo $comment['email']; ?></td>
+                    <td><?php echo $comment['content']; ?></td>
+                    <td><?php echo $comment['createDate']; ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
