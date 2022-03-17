@@ -40,10 +40,10 @@
     <?php
     if (isset($_SESSION['email']) && $_SESSION['email']) {
         echo '<h1 align="center">Welcome ' . $_SESSION['email'] . "!</h1>";
-        echo '<a href="logout.php" class="btn">Logout</a> <br \>';
+        echo '<a href="logout.php" class="btn" >Logout</a> <br \>';
 
         //  upload file 
-        echo '<a href="upload.php" class="btn">Upload</a>';
+        echo '<a href="upload.php" class="btn" >Upload</a>';
     } else {
         echo '<h1>You are not login!</h1>';
         echo '<a href="login.php" class="btn">Login</a>';

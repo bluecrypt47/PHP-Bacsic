@@ -34,14 +34,14 @@ if (isset($_POST['register'])) {
         die();
     } else {
         $sql = "INSERT INTO users (username, password, email) VALUES ('$username','$password','$email')";
-        echo '<script language="javascript">alert("Register Successfully!"); window.location="register.php";</script>';
+        echo '<script language="javascript">alert("Register Successfully!"); window.location="login.php";</script>';
 
         if (mysqli_query($conn, $sql)) {
             echo "Tên đăng nhập: " . $_POST['username'] . "<br/>";
             echo "Mật khẩu: " . $_POST['password'] . "<br/>";
             echo "Email đăng nhập: " . $_POST['email'] . "<br/>";
         } else {
-            echo '<script language="javascript">alert("Register Fail!"); window.location="login.php";</script>';
+            echo '<script language="javascript">alert("Register Fail!"); window.location="register.php";</script>';
         }
     }
 }
