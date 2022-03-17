@@ -57,5 +57,39 @@ File `upload.php`, trong trang này, user cần chọn file mà mình muốn `Up
         <?php require 'handle.php'; ?>s
     </form>
 ```
+## Download
+```php
+<?php
+            if (isset($_GET['file_id'])) {
+                $id = $_GET['file_id'];
+
+                // fetch file to download from database
+                $sql = "SELECT * FROM upload WHERE id=$id";
+                $result = mysqli_query($conn, $sql);
+
+                $file = mysqli_fetch_assoc($result);
+                $filepath = "uploads/" . $file['name'];
+
+                if (file_exists($filepath)) {
+                    header('Content-Description: File Transfer');
+                    header('Content-Type: application/octet-stream');
+                    header('Content-Disposition: attachment; filename="' . basename($filepath) . '"');
+                    header('Expires: 0');
+                    header('Cache-Control: must-revalidate');
+                    header('Pragma: public');
+                    header('Content-Length: ' . filesize($filepath));
+                    flush();
+                    readfile($filepath);
+                    exit;
+                }
+            }
+
+            ?>
+```
 ## Search file
 Dung `like ` trong DB de tim kiem.
+## Comment
+
+```php
+
+```

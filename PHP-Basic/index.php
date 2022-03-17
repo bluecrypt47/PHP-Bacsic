@@ -71,8 +71,6 @@
         <thead>
             <th>No.</th>
             <th>Filename</th>
-            <th>Size(MB)</th>
-            <th>Author</th>
             <th>Action</th>
         </thead>
         <tbody>
@@ -81,12 +79,14 @@
                 <tr>
                     <td><?php echo $i++; ?></td>
                     <td><?php echo $file['name']; ?></td>
-                    <td><?php echo $file['size'] / 1000 . "KB"; ?></td>
-                    <td><?php echo $file['email']; ?></td>
-                    <td><a class="btn btn-primary" href="home.php?file_id=<?php echo $file['id'] ?>">Download</a></td>
+                    <td><a class="btn btn-primary" href="fileDetail.php?file_id=<?php echo $file['id'] ?>">View</a> |
+                        <a class="btn btn-primary" href="index.php?file_id=<?php echo $file['id'] ?>">Download</a>
+                    </td>
 
                 </tr>
             <?php endforeach; ?>
+
+            <!-- Download -->
             <?php
             if (isset($_GET['file_id'])) {
                 $id = $_GET['file_id'];
