@@ -71,7 +71,7 @@ if (isset($_POST['login'])) {
     // Nếu kết quả trả về lớn hơn 1 thì nghĩa là username hoặc email đã tồn tại trong CSDL
     if (mysqli_num_rows($result) > 0) {
 
-        echo '<script language="javascript">alert("Login Successfully!"); window.location="home.php";</script>';
+        echo '<script language="javascript">alert("Login Successfully!"); window.location="index.php";</script>';
     } else {
         echo '<script language="javascript">alert("Email has existed!"); window.location="login.php";</script>';
         die();
@@ -95,43 +95,18 @@ if (isset($_POST['upload'])) {
     $file = $_FILES['file']['tmp_name'];
     $size = $_FILES['file']['size'];
 
-    if (!in_array($extension, ['zip', 'pdf', 'png', 'jpg', 'jpeg', 'docx', 'gif'])) {
-        echo "File tail must be zip, pdf, png, jpg, jpeg, docx or gif";
+    if (!in_array($extension, ['pdf', 'png', 'jpg', 'jpeg', 'gif'])) {
+        echo "File tail must be pdf, png, jpg, jpeg or gif";
     } else {
         if (move_uploaded_file($file, $destination)) {
             $sql = "INSERT INTO upload (name, size, email) VALUES ('$name',  $size, '$email')";
 
             if (mysqli_query($conn, $sql)) {
-                echo '<script language="javascript">alert("Upload file Successfully!"); window.location="home.php";</script>';
+                echo '<script language="javascript">alert("Upload file Successfully!"); window.location="index.php";</script>';
             } else {
                 echo '<script language="javascript">alert("Upload file Fail!"); window.location="upload.php";</script>';
                 die();
             }
         }
-    }
-}
-
-// Download
-if (isset($_GET['file_id'])) {
-    $id = $_GET['file_id'];
-
-    // fetch file to download from database
-    $sql = "SELECT * FROM upload WHERE id=$id";
-    $result = mysqli_query($conn, $sql);
-
-    $file = mysqli_fetch_assoc($result);
-    $filepath = "uploads/" . $file['name'];
-
-    if (file_exists($filepath)) {
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="' . basename($filepath) . '"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize($filepath));
-        flush();
-        readfile($filepath);
-        exit;
     }
 }

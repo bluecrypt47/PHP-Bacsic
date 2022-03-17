@@ -67,7 +67,7 @@
 </head>
 
 <body>
-    <a class="btn btn-lg  " href="home.php"><b>Home</b></a>
+    <a class="btn btn-lg  " href="index.php"><b>Home</b></a>
     <form action="upload.php" class="form" method="POST" enctype="multipart/form-data">
         <h2 class="form-heading">Upload File</h2>
         <div class="form-group">
