@@ -1,7 +1,4 @@
 <?php
-
-use LDAP\Result;
-
 $conn = mysqli_connect('localhost', 'root', '', 'test');
 session_start();
 ?>
@@ -82,13 +79,11 @@ session_start();
         $content = $_POST['content'];
         $idFile = $_GET['file_id'];
 
-        if (empty($content) || $idFile == 0) {
+        if (empty($content)) {
             echo '<script language="javascript">alert("Enter comment, pls!"); window.location="fileDetail.php";</script>';
-        }
-        if ($idFile == 0) {
+        } elseif ($idFile == 0) {
             echo '<script language="javascript">alert("You have not commented!"); window.location="fileDetail.php";</script>';
-        }
-        if (isset($_SESSION['email'])) {
+        } elseif (isset($_SESSION['email'])) {
             $email = $_SESSION['email'];
 
             $sql = "INSERT INTO comments (email, idFile, content) VALUES ('$email','$idFile','$content')";
@@ -102,10 +97,10 @@ session_start();
     <?php
     $id = $_GET['file_id'];
 
-    $sql = "SELECT * FROM comment where idFile = $id";
+    $sql = "SELECT * FROM comments where idFile = $id";
     $result = mysqli_query($conn, $sql);
 
-    $files = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $comments = mysqli_fetch_all($result, MYSQLI_ASSOC);
     ?>
     <table>
         <thead>
@@ -114,7 +109,7 @@ session_start();
             <th>Time</th>
         </thead>
         <tbody>
-            <?php foreach ($files as $file) : ?>
+            <?php foreach ($comments as $comment) : ?>
                 <tr>
                     <td><?php echo $file['email']; ?></td>
                     <td><?php echo $file['content']; ?></td>
