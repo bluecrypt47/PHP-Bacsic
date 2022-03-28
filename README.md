@@ -1,5 +1,5 @@
 ### Người thực hiện: Lê Trần Văn Chương
-Ngày làm: 14 - 18/03/2022
+Ngày làm: 14 - 18/03/2022.
 Mục lục:
 -   Các hàm sử dụng
 -   Connection MySQL
