@@ -1,5 +1,6 @@
 ### Người thực hiện: Lê Trần Văn Chương
 Ngày làm: 14 - 18/03/2022.
+
 Mục lục:
 -   Các hàm sử dụng.
 -   Connection MySQL.
@@ -12,9 +13,15 @@ Mục lục:
 
 ## Các hàm sử dụng
 Hàm `isset` dùng để kiểm tra 'register' đã được khởi tạo chưa. 
-Hàm `trim` để lấy chuỗi và bỏ khoảng chắn đầu cuối, `addslashes` dùng để chèn dấu gạch chéo "\" vào trước dấu nháy đôi, đơn, dấu gạch chéo ngược và NUL (nhằm xử lý các ký tự đặc biệt có thể gây ra các vấn đề bảo mật).
+
+Hàm `trim` để lấy chuỗi và bỏ khoảng chắn đầu cuối.
+
+Hàm  `addslashes` dùng để chèn dấu gạch chéo "\" vào trước dấu nháy đôi, đơn, dấu gạch chéo ngược và NUL (nhằm xử lý các ký tự đặc biệt có thể gây ra các vấn đề bảo mật).
+
 Hàm `md5` dùng để mã hóa md5 cho chuỗi truyền vào.
+
 Hàm `empty` dùng để kiểm tra chuỗi rỗng.
+
 Hàm `mysqli_connect()` sẽ kết nối tới MySQL server. Cú pháp: `mysqli_connect( $host, $username, $pass, $dbname);`. Trong đó: 
 - `$host` là tên hosting.
 - `$username` là tên người dùng MySQL.
@@ -30,6 +37,7 @@ Hàm `mysqli_query()` dùng để thực thi các câu truy vấn với DB:
         - `MYSQLI_STORE_RESULT` : giá trị mặc định nếu không truyền.
 
 Hàm `mysqli_num_rows()` sẽ trả về số hàng trong tập hợp kết quả truyền vào có cú pháp: `mysqli_num_rows( $result);`. Trong đó: `$result` là tập hợp kết quả trả về từ các hàm `mysqli_query()`, `mysqli_store_result()` hoặc `mysqli_use_result()`. 
+
 Hàm `mysqli_fetch_assoc()` sẽ tìm và trả về một dòng kết quả của một truy vấn MySQL nào đó dưới dạng một mảng kết hợp. Cú pháp: `mysqli_fetch_assoc( $result);`. Trong đó: `$result` là kết quả của truy vấn, là kết quả trả về của các hàm: `mysqli_query()`, `mysqli_store_result()` hoặc `mysqli_use_result()`.
 
 ## Connection MySQL
