@@ -1,3 +1,37 @@
+### Người thực hiện: Lê Trần Văn Chương
+Ngày làm: 14 - 18/03/2022
+Mục lục:
+-   Các hàm sử dụng
+-   Connection MySQL
+-   Register user
+-   Login
+-   Upload file
+-   Download file
+-   Search file
+-   Comment
+
+## Các hàm sử dụng
+Hàm `isset` dùng để kiểm tra 'register' đã được khởi tạo chưa. 
+Hàm `trim` để lấy chuỗi và bỏ khoảng chắn đầu cuối, `addslashes` dùng để chèn dấu gạch chéo "\" vào trước dấu nháy đôi, đơn, dấu gạch chéo ngược và NUL (nhằm xử lý các ký tự đặc biệt có thể gây ra các vấn đề bảo mật).
+Hàm `md5` dùng để mã hóa md5 cho chuỗi truyền vào.
+Hàm `empty` dùng để kiểm tra chuỗi rỗng.
+Hàm `mysqli_connect()` sẽ kết nối tới MySQL server. Cú pháp: `mysqli_connect( $host, $username, $pass, $dbname);`. Trong đó: 
+- `$host` là tên hosting.
+- `$username` là tên người dùng MySQL.
+- `$pass` là mật khẩu của người dùng.
+- `$dbname` là tên cơ sở dữ liệu cần kết nối.
+
+Hàm `mysqli_query()` dùng để thực thi các câu truy vấn với DB:
+- Cú pháp: `mysqli_query( $connect, $sql, $mode);` Trong đó:
+    - `$connect` là kết nối MySQL.
+    - `$sql` là câu truy vấn.
+    - `$mode` là tham số tùy chọn, mang một trong các giá trị sau:
+        - `MYSQLI_USE_RESULT` : sử dụng khi cần lấy một lượng lớn dữ liệu.
+        - `MYSQLI_STORE_RESULT` : giá trị mặc định nếu không truyền.
+
+Hàm `mysqli_num_rows()` sẽ trả về số hàng trong tập hợp kết quả truyền vào có cú pháp: `mysqli_num_rows( $result);`. Trong đó: `$result` là tập hợp kết quả trả về từ các hàm `mysqli_query()`, `mysqli_store_result()` hoặc `mysqli_use_result()`. 
+Hàm `mysqli_fetch_assoc()` sẽ tìm và trả về một dòng kết quả của một truy vấn MySQL nào đó dưới dạng một mảng kết hợp. Cú pháp: `mysqli_fetch_assoc( $result);`. Trong đó: `$result` là kết quả của truy vấn, là kết quả trả về của các hàm: `mysqli_query()`, `mysqli_store_result()` hoặc `mysqli_use_result()`.
+
 ## Connection MySQL
 
 File `handle.php` dùng để kết nối DB.
@@ -10,52 +44,116 @@ mysqli_set_charset($conn, "utf8");
 ## Register user
 
 File `register.php` là form register và gọi handle để có thể truy vấn trong DB và dùng Method là POST.
-```html, php
- <form method="post" action="register.php" class="form">
+```php
+ if (isset($_POST['register'])) {
+    $username = trim($_POST['username']);
+    $password = md5(addslashes(trim($_POST['password'])));
+    $email = trim($_POST['email']);
 
-        <h2>Register</h2>
 
-        Email: <input type="email" name="email" value="" required />
+    if (empty($username)) {
+        array_push($errors, "Username is required");
+    }
+    if (empty($email)) {
+        array_push($errors, "Email is required");
+    }
+    if (empty($password)) {
+        array_push($errors, "Two password do not match");
+    }
 
-        Password: <input type="password" name="password" value="" required />
+    // Kiểm tra username hoặc email có bị trùng hay không
+    $sql = "SELECT * FROM users WHERE email = '$email' OR username = '$username'";
 
-        Username: <input type="text" name="username" value="" required>
+    // Thực thi câu truy vấn
+    $result = mysqli_query($conn, $sql);
 
-        <input type="submit" name="register" value="Register" />
-        <a href="./login.php">Login</a>
-        <?php require 'handle.php'; ?>
-    </form>
+    // Nếu kết quả trả về lớn hơn 1 thì nghĩa là username hoặc email đã tồn tại trong CSDL
+    if (mysqli_num_rows($result) > 0) {
+        echo '<script language="javascript">alert("Email or username has existed!"); window.location="register.php";</script>';
+        // Dừng chương trình
+        die();
+    } else {
+        $sql = "INSERT INTO users (username, password, email) VALUES ('$username','$password','$email')";
+        echo '<script language="javascript">alert("Register Successfully!"); window.location="login.php";</script>';
+
+        if (mysqli_query($conn, $sql)) {
+            echo "Tên đăng nhập: " . $_POST['username'] . "<br/>";
+            echo "Mật khẩu: " . $_POST['password'] . "<br/>";
+            echo "Email đăng nhập: " . $_POST['email'] . "<br/>";
+        } else {
+            echo '<script language="javascript">alert("Register Fail!"); window.location="register.php";</script>';
+        }
+    }
+}
 ```
 ## Login
+
 File `login.php` cũng là form login và gọi handle để có thể truy vấn trong DB và dùng Method là POST.
 ```php
-<form method="post" action="login.php" class="form">
+if (isset($_POST['login'])) {
 
-    <h2>Login</h2>
+    $email = addslashes(trim($_POST['email']));
+    $password = md5(addslashes(trim($_POST['password'])));
 
-    Email: <input type="email" name="email" value="" required />
 
-    Password: <input type="password" name="password" value="" required />
+    if (empty($email)) {
+        array_push($errors, "Email is required");
+    }
+    if (empty($password)) {
+        array_push($errors, "Two password do not match");
+    }
 
-    <input type="submit" name="login" value="Login" />
-    <a href="./register.php">Register</a>
-    <?php require 'handle.php'; ?>
-  </form>
+    // Kiểm tra email và password có trong DB không
+    $sql = "SELECT * FROM users WHERE email = '$email' AND password = '$password'";
+
+    // Thực thi câu truy vấn
+    $result = mysqli_query($conn, $sql);
+
+    // Nếu kết quả trả về lớn hơn 1 thì nghĩa là username hoặc email đã tồn tại trong CSDL
+    if (mysqli_num_rows($result) > 0) {
+
+        echo '<script language="javascript">alert("Login Successfully!"); window.location="index.php";</script>';
+    } else {
+        echo '<script language="javascript">alert("Email has existed!"); window.location="login.php";</script>';
+        die();
+    }
+    $_SESSION['email'] = $email;
+    echo "Xin chào " . $username;
+    die();
+}
 ```
 ## Upload file
 
 File `upload.php`, trong trang này, user cần chọn file mà mình muốn `Upload` và upload lên DB. Trong đây, cá dùng tới `enctype="multipart/form-data"` nếu user muốn upload lên được và dùng Method là POST.
 ```php
-<form action="upload.php" class="form" method="POST" enctype="multipart/form-data">
-        <h2 class="form-heading">Upload File</h2>
-        <div class="form-group">
-            <label for="InputFile">File input</label>
-            <input type="file" name="file" id="InputFile">
+if (isset($_POST['upload'])) {
 
-        </div>
-        <input class="btn btn-lg btn-primary btn-block" type="submit" name="upload" value="Upload" />
-        <?php require 'handle.php'; ?>s
-    </form>
+    // lay thong tin file upload
+    $name = $_FILES['file']['name'];
+    $size = $_FILES['file']['size'];
+    $email = $_SESSION['email'];
+    $destination = './uploads/' . $name;
+
+    $extension = pathinfo($name, PATHINFO_EXTENSION);
+
+    $file = $_FILES['file']['tmp_name'];
+    $size = $_FILES['file']['size'];
+
+    if (!in_array($extension, ['pdf', 'png', 'jpg', 'jpeg', 'gif'])) {
+        echo "File tail must be pdf, png, jpg, jpeg or gif";
+    } else {
+        if (move_uploaded_file($file, $destination)) {
+            $sql = "INSERT INTO upload (name, size, email) VALUES ('$name',  $size, '$email')";
+
+            if (mysqli_query($conn, $sql)) {
+                echo '<script language="javascript">alert("Upload file Successfully!"); window.location="index.php";</script>';
+            } else {
+                echo '<script language="javascript">alert("Upload file Fail!"); window.location="upload.php";</script>';
+                die();
+            }
+        }
+    }
+}
 ```
 ## Download
 ```php
