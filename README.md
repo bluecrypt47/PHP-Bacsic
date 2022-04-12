@@ -2,14 +2,14 @@
 Ngày làm: 14 - 18/03/2022.
 
 Mục lục:
--   Các hàm sử dụng.
--   Connection MySQL.
--   Register user.
--   Login.
--   Upload file.
--   Download file.
--   Search file.
--   Comment.
+- [Các hàm sử dụng](#các-hàm-sử-dụng)
+- [Connection MySQL](#connection-mysql)
+- [Register user](#register-user)
+- [Login](#login)
+- [Upload file](#upload-file)
+- [Download](#download)
+- [Search file](#search-file)
+- [Comment](#comment)
 
 ## Các hàm sử dụng
 Hàm `isset` dùng để kiểm tra 'register' đã được khởi tạo chưa. 
